@@ -1,0 +1,58 @@
+---
+title: "ISO Code per each Country"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(glue)
+library(ggrepel)
+library(ggridges)
+library(ggthemes)
+library(leaflet)
+library(lubridate)
+library(scales)
+library(tidyverse)
+library(sf)
+library(rnaturalearth)
+library(padr)
+library(plotly)
+library(magick)
+library(leaflet)
+library(dplyr)
+```
+
+```{r}
+countries <- read.csv("average-latitude-longitude-countries.csv")
+countries_clean <- countries %>%
+  drop_na(ISO.3166.Country.Code)
+```
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Map
+
+```{r}
+map1 <- leaflet(data = countries_clean)
+map1 <- addTiles(map1)
+
+popup <- paste(countries_clean$countries_clean,  "<br>", 
+               "ISO Country Code:", countries_clean$ISO.3166.Country.Code
+               )
+
+map1 <- addMarkers(map1,
+                   lng = countries_clean$Longitude,
+                   lat = countries_clean$Latitude,
+                   popup = popup
+                     )
+
+map1
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
